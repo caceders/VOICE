@@ -27,7 +27,7 @@ This document provides an overview of the system architecture for **VOICE**. The
 
 ## Interaction Diagram
 
-![System Architecture Diagram](images\architecture_diagram.png)
+![System Architecture Diagram](./images/architecture_diagram.png)
 
 ## Critique
 
