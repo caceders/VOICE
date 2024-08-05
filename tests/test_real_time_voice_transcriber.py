@@ -23,7 +23,7 @@ def test_real_time_voice_transcriber():
     
         mock_event = mock.Mock()
         mock_event.result.reason = speechsdk.ResultReason.RecognizedSpeech
-        mock_event.result.text = "Test"
+        mock_event.result.text = "Failtest"
         
         transcriber_thread = threading.Thread(target= transcriber.transcribe_voice)
         transcriber_thread.start()
