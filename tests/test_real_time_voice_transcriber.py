@@ -11,7 +11,7 @@ def test_real_time_voice_transcriber():
     
     transcription_queue = Queue()
     quit_queue = Queue()
-    audio_test_file = os.path.abspath("./tests/assets/This_is_a_test.wav")
+    audio_test_file = os.path.abspath("./tests/assets/this_is_a_test.wav")
 
     transcriber = real_time_voice_transcriber(transcription_queue, quit_queue, audio_test_file)
     
