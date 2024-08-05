@@ -3,7 +3,6 @@ from queue import Queue
 from dotenv import load_dotenv
 import threading
 import os
-import config.config as config
 
 
 class real_time_voice_transcriber:
