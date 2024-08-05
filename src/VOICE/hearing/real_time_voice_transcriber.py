@@ -11,7 +11,7 @@ class real_time_voice_transcriber:
     quit_queue: Queue
     speech_recognizer: speechsdk.SpeechRecognizer
 
-    def __init__(self, transcription_queue, quit_queue) -> None:
+    def __init__(self, transcription_queue, quit_queue, audio_file_path=None) -> None:
         self.transcription_queue = transcription_queue
         self.quit_queue = quit_queue
 
@@ -19,7 +19,13 @@ class real_time_voice_transcriber:
         speech_region = os.getenv("AZURE_SPEECH_REGION")
 
         speech_config = speechsdk.SpeechConfig(subscription=resource_key, region=speech_region)
-        self.speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config)
+
+        if audio_file_path:
+            audio_config = speechsdk.audio.AudioConfig(filename=audio_file_path)
+        else:
+            audio_config = speechsdk.audio.AudioConfig(use_default_microphone=True)
+
+        self.speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, audio_config=audio_config)
     
     def transcribe_voice(self) -> None:
 
