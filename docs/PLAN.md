@@ -5,7 +5,7 @@ A tentative plan of how to tacle the project with enumerated tasks for refrence.
 ## 1 Implement Real Time Voice Transcriber Component
 
 - 1.1 Implement Azures speech to text SDK
-    - 1.1.1 Use dotenv to manage secrets and API keys
+    - ~~1.1.1 Use dotenv to manage secrets and API keys~~
     - 1.1.2 Create a config file containing the setup configurations for Azure SDKs speech recognizer
     - Use [this](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/get-started-speech-to-text?tabs=windows%2Cterminal&pivots=programming-language-python) website for guide 
 - 1.2 Use pika to prepare for message passing communication
@@ -48,6 +48,7 @@ A tentative plan of how to tacle the project with enumerated tasks for refrence.
 ## 8 Implement Voice Recognizer
 
 - 8.1 Read the [documentation](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/speaker-recognition-overview) for Azure speecher recognition and hope to god this is feasable with the current [architectural structure](architecture.md). 
+    - It seems to be possible - but the supplied audio samples need to be at least 20 seconds for creating voice profiles - Perhaps ask for permission from user to store identification? Then start an enrollment prosess independent of the thinking process? Will need to experiment.
 
 ## 9 Others
 

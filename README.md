@@ -17,6 +17,8 @@ Currently the project is in the planning phase. The following aspects are yet to
 - Interraction with ChatGPT API for response to user.
 - Text to speech solutions for the response.
 
+The speech recognition part of the project is not strictly necessary, and might have to be emitted. Then that would include the [Known Persons Register](./docs/architecture.md)
+
 ## Installation
 
 1. Clone the repository:
