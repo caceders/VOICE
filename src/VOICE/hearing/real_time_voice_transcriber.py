@@ -3,6 +3,7 @@ from queue import Queue
 from dotenv import load_dotenv
 import threading
 import os
+import time
 
 
 class real_time_voice_transcriber:
@@ -31,6 +32,7 @@ class real_time_voice_transcriber:
 
         def handle_transcription_results(evt: speechsdk.SpeechRecognitionEventArgs):
             if evt.result.reason == speechsdk.ResultReason.RecognizedSpeech:
+                print(evt.result.text)
                 self.transcription_queue.put(evt.result.text)
 
         self.speech_recognizer.recognized.connect(handle_transcription_results)
@@ -39,4 +41,12 @@ class real_time_voice_transcriber:
 
         self.quit_queue.get()
 
-                
+trans = Queue()
+quit = Queue()
+
+transcriber = real_time_voice_transcriber(trans, quit, "./tests/assets/this_is_a_test.wav")
+thread = threading.Thread(target=transcriber.transcribe_voice) 
+thread.start()
+
+time.sleep(1)
+quit.put("quit")
