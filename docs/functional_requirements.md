@@ -14,7 +14,7 @@
 Else the transcribed message is dropped.
 - Set recording to active until it gets *response finished* message from the **Text To Speech Converter**.
 - Begins hybernation when system is out of conversation for a specified amount of time.
-- Awakens when wakeup-phrase has been received.
+- Awakens when wakeup-phrase has been received. -> Tells the **Transcription Formater** system has just awoken.
 - Keeps track of wether the system is responding or not.
 
 ## Transcription formater
