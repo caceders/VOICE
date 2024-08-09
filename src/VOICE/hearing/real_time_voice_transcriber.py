@@ -40,13 +40,3 @@ class real_time_voice_transcriber:
         self.speech_recognizer.start_continuous_recognition()
 
         self.quit_queue.get()
-
-trans = Queue()
-quit = Queue()
-
-transcriber = real_time_voice_transcriber(trans, quit, "./tests/assets/this_is_a_test.wav")
-thread = threading.Thread(target=transcriber.transcribe_voice) 
-thread.start()
-
-time.sleep(1)
-quit.put("quit")

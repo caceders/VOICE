@@ -31,11 +31,11 @@ This document provides an overview of the system architecture for **VOICE**. The
 
 ## Communication
 
-The **Real Time Voice Transcriber**, the **Voice Recognizer** will be running on seperate threads and communicate to the **Voice Activity Gatekeeper** through messagepassing. This is due to the plan to use Azure Voice Recognition and Voice Transcription APIs simultanously, and Azures Transcription SDK rund asynchronous and is hell to deal with in synchronous code.
+The **Real Time Voice Transcriber**, the **Voice Recognizer** will be running on seperate threads and communicate to the **Voice Activity Gatekeeper** through messagepassing. This is due to the plan to use Azure Voice Recognition and Voice Transcription APIs concurrently.
 
-The **Voice Activity Gatekeeper** will communicate to the **Transcription Formater** through messagepassing. This is again so that **Voice Activity Gatekeeper** can run asynchronous and have a fast response time to deal with more Azure bullshit. The **Transcription Formater**, **LLM Responder** and **Memory Archiver** will communicate through dependency injection. This is due to the simple fact that it is easier to deal with.
+The **Voice Activity Gatekeeper** will communicate to the **Transcription Formater** through messagepassing. This is again so that **Voice Activity Gatekeeper** can run concurrently and have a fast response time to deal with more Azure bullshit. The **Transcription Formater**, **LLM Responder** and **Memory Archiver** will communicate through dependency injection. This is due to the simple fact that it is easier to deal with.
 
-The **Text to Speech Converter** will run asynchronously on another thread and communicate through messages. This makes all communication to the **Voice Activation Gatekeeper** messaging, again to make it most responsive.
+The **Text to Speech Converter** will run concurrently on another thread and communicate through messages. This makes all communication to the **Voice Activation Gatekeeper** messaging, again to make it most responsive.
 
 The **Transcription Formater** will communicate to the **Known Persons Register** through RESTApi calls. This is due to the fact that i am terrible with APIs and web communication and know as much about databases as a dry turd.
 
