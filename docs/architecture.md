@@ -4,26 +4,28 @@
 
 This document provides an overview of the system architecture for **VOICE**. The system functionality is divided into three main operations: **Hearing**, **thinking** and **speaking**. In addition to this the system will **hibernate** when it has spent some specified amount of time out of conversatinos. It will then need to be **awakened**.
 
+NOTE: This architecture contains the **Voice Recognizer** which has been temporarily emitted from the project, due to it not being strictly necessary for the fundamental desired functionality.
+
 ## Components and data flow
 
 **Hearing**
-- **Real time voice transcriber**: Processes and recognizes voice data from system microphone. Outputs text.
+- **Real Time Voice Transcriber**: Processes and recognizes voice data from system microphone. Outputs text.
 
-- **Voice recognizer**: Analyzes voice data from system microphone and outputs voice properties.
+- **Voice Recognizer**: Analyzes voice data from system microphone and outputs voice properties.
 
 **Thinking**
-- **Voice activity gatekeeper**: Blocks audio transcripts information flow when system is generating a response or hybernating. Responsible for system **hibernation** and **awakening**.
+- **Voice Activity Gatekeeper**: Blocks audio transcripts information flow when system is generating a response or hybernating. Responsible for system **hibernation** and **awakening**.
 
-- **Transcription formater**: Formats the transcription from voice for deliverance to the LLM responder. Uses the results from the voice recognizer to lookup names in the Known Persons Register.
+- **Transcription Formater**: Formats the transcription from voice for deliverance to the LLM responder. Uses the results from the voice recognizer to lookup names in the Known Persons Register.
 
-- **Known persons register**: Holds a register of known persons and their corresponding voice recognition properties.
+- **Known Persons Register**: Holds a register of known persons and their corresponding voice recognition properties.
 
-- **LLM responder**: Generates a response based on initial configuration values, the formated transcription and memories from the Memory Archive.
+- **LLM Responder**: Generates a response based on initial configuration values, the formated transcription and memories from the Memory Archive.
 
-- **Memory archiver**: Archives new information the LLM finds important and retrieves previously stored information. Updates the Known Persons Register if person has been introduced.
+- **Memory Archiver**: Archives new information the LLM finds important and retrieves previously stored information. Updates the Known Persons Register if person has been introduced.
 
 **SPEAKING**
-- **Text to speech converter**: Converts the output from the LLM Responder to speech audio file and plays it. Notifies the Voice Activity Gatekeeper when the system is done speaking and ready to get more user input.
+- **Text To Speech Converter**: Converts the output from the LLM Responder to speech audio file and plays it. Notifies the Voice Activity Gatekeeper when the system is done speaking and ready to get more user input.
 
 ## Interaction Diagram
 
