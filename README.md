@@ -13,11 +13,11 @@ The project is designed to be somewhat modular to enable scalability and maintai
 
 Currently the project is in the planning phase. The following aspects are yet to be developed and/or implemented:
 
-- Real time voice transcription and recognition.
+- Voice recognition.
 - Interraction with ChatGPT API for response to user.
 - Text to speech solutions for the response.
 
-The speech recognition part of the project is not strictly necessary, and might have to be emitted. Then that would include the [Known Persons Register](./docs/architecture.md)
+The speech recognition part of the project is not strictly necessary, and is currently emitted. This includes the [Known Persons Register](./docs/architecture.md)
 
 ## Installation
 
