@@ -1,4 +1,4 @@
-from queue import Queue
+import queue
 import time
 import json
 import threading
@@ -13,10 +13,10 @@ import threading
 
 class voice_activity_gatekeeper:
 
-    unfiltered_transcription_queue: Queue
-    filtered_transcription_queue: Queue
+    unfiltered_transcription_queue: queue.Queue
+    filtered_transcription_queue: queue.Queue
     # Litteraly called responded signal - should be signal then, and not queue, dumdum.
-    responded_signal: Queue
+    responded_signal: queue.Queue
 
     hybernation_activation_time: float
     hybernation_wakeup_phrase: str
@@ -53,6 +53,10 @@ class voice_activity_gatekeeper:
         response_signal_thread.start()
 
         while not self._finished:
+
+            if self.unfiltered_transcription_queue.empty():
+                continue
+
             transcription = self.unfiltered_transcription_queue.get()
 
             # Wake up if wakeup phrase is spoken
@@ -78,10 +82,13 @@ class voice_activity_gatekeeper:
         while not self._finished:
             if ((time.time() - self.last_activity_time) >= self.hybernation_activation_time):
                 self.hybernating = True
-            time.sleep(0.1)
+            time.sleep(.1)
 
     def _open_gate_on_finish_response(self):
         while not self._finished:
-            self.responded_signal.get()
-            self.last_activity_time = time.time()
-            self.responding = False
+            try:
+                self.responded_signal.get(timeout=.1)
+                self.last_activity_time = time.time()
+                self.responding = False
+            except queue.Empty:
+                pass
