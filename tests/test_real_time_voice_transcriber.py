@@ -20,7 +20,6 @@ def test_real_time_voice_transcriber():
 
     result = transcription_queue.get()
     
-    time.sleep(1) # Wait for transcriber to be finished
     quit_queue.put("quit")
     transcriber_thread.join()
 
