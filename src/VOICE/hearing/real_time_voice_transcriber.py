@@ -1,9 +1,7 @@
 import azure.cognitiveservices.speech as speechsdk
 from queue import Queue
 from dotenv import load_dotenv
-import threading
 import os
-import time
 
 
 class real_time_voice_transcriber:

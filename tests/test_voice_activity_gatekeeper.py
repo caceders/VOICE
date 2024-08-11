@@ -1,7 +1,7 @@
 from unittest import mock
 from queue import Queue
 import threading
-from src.VOICE.hearing.voice_activity_gatekeeper import voice_activity_gatekeeper
+from VOICE.thinking.voice_activity_gatekeeper import voice_activity_gatekeeper
 import time
 import pytest
 import json
