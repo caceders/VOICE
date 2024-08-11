@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import os
 
 
-class real_time_voice_transcriber:
+class RealTimeVoiceTranscriber:
 
     transcription_queue: Queue
     quit_queue: Queue

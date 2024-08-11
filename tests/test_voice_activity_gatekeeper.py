@@ -1,7 +1,7 @@
 from unittest import mock
 from queue import Queue
 import threading
-from src.VOICE.thinking.voice_activity_gatekeeper import voice_activity_gatekeeper
+from src.VOICE.thinking.voice_activity_gatekeeper import VoiceActivityGatekeeper
 import time
 import pytest
 import json
@@ -12,7 +12,7 @@ def test_get_message():
     filtered_transcriptions = Queue()
     responded_signal = Queue()
 
-    gatekeeper = voice_activity_gatekeeper(unfiltered_transcriptions, filtered_transcriptions, responded_signal)
+    gatekeeper = VoiceActivityGatekeeper(unfiltered_transcriptions, filtered_transcriptions, responded_signal)
     
     unfiltered_transcriptions.put("Test")
     result, _ = filtered_transcriptions.get()
@@ -26,7 +26,7 @@ def test_inital_wakeup_tag():
     filtered_transcriptions = Queue()
     responded_signal = Queue()
 
-    gatekeeper = voice_activity_gatekeeper(unfiltered_transcriptions, filtered_transcriptions, responded_signal)
+    gatekeeper = VoiceActivityGatekeeper(unfiltered_transcriptions, filtered_transcriptions, responded_signal)
 
     unfiltered_transcriptions.put("Test")
     _, result = filtered_transcriptions.get()
@@ -40,7 +40,7 @@ def test_responding():
     filtered_transcriptions = Queue()
     responded_signal = Queue()
 
-    gatekeeper = voice_activity_gatekeeper(unfiltered_transcriptions, filtered_transcriptions, responded_signal)
+    gatekeeper = VoiceActivityGatekeeper(unfiltered_transcriptions, filtered_transcriptions, responded_signal)
 
     unfiltered_transcriptions.put("Test passing")
     unfiltered_transcriptions.put("Test discarded")
@@ -66,7 +66,7 @@ def test_hybernation():
     filtered_transcriptions = Queue()
     responded_signal = Queue()
 
-    gatekeeper = voice_activity_gatekeeper(unfiltered_transcriptions, filtered_transcriptions, responded_signal)
+    gatekeeper = VoiceActivityGatekeeper(unfiltered_transcriptions, filtered_transcriptions, responded_signal)
 
 
     with open('./config.json', 'r') as config_json:

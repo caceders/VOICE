@@ -4,7 +4,7 @@ import json
 import threading
 
 
-class voice_activity_gatekeeper:
+class VoiceActivityGatekeeper:
 
     def __init__(self, unfiltered_transcription_queue, filtered_transcription_queue, responded_signal):
         self.unfiltered_transcription_queue = unfiltered_transcription_queue
