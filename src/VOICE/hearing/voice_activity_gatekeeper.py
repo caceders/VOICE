@@ -81,7 +81,7 @@ class voice_activity_gatekeeper:
             time.sleep(0.1)
 
     def _open_gate_on_finish_response(self):
-        while self._finished:
+        while not self._finished:
             self.responded_signal.get()
             self.last_activity_time = time.time()
             self.responding = False
