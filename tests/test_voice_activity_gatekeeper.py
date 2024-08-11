@@ -1,20 +1,19 @@
 from unittest import mock
 from queue import Queue
 import threading
-import os
+from src.VOICE.hearing.voice_activity_gatekeeper import voice_activity_gatekeeper
 import time
 import pytest
 import json
 
 
-@pytest.mark.skip(reason="Feature not implemented yet")
 def test_get_message():
     unfiltered_transcriptions = Queue()
     filtered_transcriptions = Queue()
     responded_signal = Queue()
 
     gatekeeper = voice_activity_gatekeeper(unfiltered_transcriptions, filtered_transcriptions, responded_signal)
-    gatekeeper_thread = threading.Thread(target= gatekeeper.gatekeep)
+    gatekeeper_thread = threading.Thread(target= gatekeeper.gatekeep_voice_activity)
 
     gatekeeper_thread.start()
 
@@ -23,14 +22,13 @@ def test_get_message():
     assert result == "Test"
 
 
-@pytest.mark.skip(reason="Feature not implemented yet")
 def test_inital_wakeup_tag():
     unfiltered_transcriptions = Queue()
     filtered_transcriptions = Queue()
     responded_signal = Queue()
 
     gatekeeper = voice_activity_gatekeeper(unfiltered_transcriptions, filtered_transcriptions, responded_signal)
-    gatekeeper_thread = threading.Thread(target= gatekeeper.gatekeep)
+    gatekeeper_thread = threading.Thread(target= gatekeeper.gatekeep_voice_activity)
 
     gatekeeper_thread.start()
 
@@ -40,21 +38,24 @@ def test_inital_wakeup_tag():
     assert result == "Awoken"
 
 
-@pytest.mark.skip(reason="Feature not implemented yet")
 def test_responding():
     unfiltered_transcriptions = Queue()
     filtered_transcriptions = Queue()
     responded_signal = Queue()
 
     gatekeeper = voice_activity_gatekeeper(unfiltered_transcriptions, filtered_transcriptions, responded_signal)
-    gatekeeper_thread = threading.Thread(target= gatekeeper.gatekeep)
+    gatekeeper_thread = threading.Thread(target= gatekeeper.gatekeep_voice_activity)
 
     gatekeeper_thread.start()
 
     unfiltered_transcriptions.put("Test passing")
     unfiltered_transcriptions.put("Test discarded")
 
+    time.sleep(.1) # Let gatekeeper work
+
     responded_signal.put("Responded")
+
+    time.sleep(.1) # Let gatekeeper work
 
     unfiltered_transcriptions.put("Test passing 2")
 
@@ -65,14 +66,13 @@ def test_responding():
     assert passing_2 == "Test passing 2"
 
 
-@pytest.mark.skip(reason="Feature not implemented yet")
 def test_hybernation():
     unfiltered_transcriptions = Queue()
     filtered_transcriptions = Queue()
     responded_signal = Queue()
 
     gatekeeper = voice_activity_gatekeeper(unfiltered_transcriptions, filtered_transcriptions, responded_signal)
-    gatekeeper_thread = threading.Thread(target= gatekeeper.gatekeep)
+    gatekeeper_thread = threading.Thread(target= gatekeeper.gatekeep_voice_activity)
     gatekeeper_thread.start()
 
     with open('./config.json', 'r') as config_json:
@@ -80,9 +80,9 @@ def test_hybernation():
     
     hyberation_time = config['hybernation_activation_time']
 
-    with mock.patch('time.time', return_value = time.time() + hyberation_time):
-
-        wakeup_phrase = config['wakeup phrase']
+    with mock.patch('time.time', return_value = time.time() + hyberation_time + 1):
+        time.sleep(1) # Let gatekeeper work
+        wakeup_phrase = config['hybernation_wakup_phrase']
         unfiltered_transcriptions.put("no wakeup_phrase")
         unfiltered_transcriptions.put(wakeup_phrase)
 
