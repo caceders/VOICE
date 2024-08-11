@@ -14,8 +14,12 @@ class RealTimeVoiceTranscriber:
         self.transcription_queue = transcription_queue
         self.quit_queue = quit_queue
 
+        load_dotenv()
         resource_key = os.getenv("AZURE_SPEECH_RESOURCE_KEY")
         speech_region = os.getenv("AZURE_SPEECH_REGION")
+
+        if not resource_key or not speech_region:
+            raise ValueError("Azure Speech resource key and region must be set in environment variables.")
 
         speech_config = speechsdk.SpeechConfig(subscription=resource_key, region=speech_region)
 

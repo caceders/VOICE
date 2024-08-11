@@ -6,6 +6,8 @@ import threading
 
 class VoiceActivityGatekeeper:
 
+    CHECK_FOR_UPDATE_PAUSE = 0.1
+
     def __init__(self, unfiltered_transcription_queue, filtered_transcription_queue, responded_signal):
         self.unfiltered_transcription_queue = unfiltered_transcription_queue
         self.filtered_transcription_queue = filtered_transcription_queue
@@ -36,11 +38,14 @@ class VoiceActivityGatekeeper:
 
     def stop(self):
         self._finished = True
+        self.hibernation_thread.join()
+        self.response_signal_thread.join()
+        self.gatekeeper_thread.join()
 
     def _gatekeep_voice_activity(self):
         while not self._finished:
             try:
-                transcription = self.unfiltered_transcription_queue.get(timeout=0.1)
+                transcription = self.unfiltered_transcription_queue.get(timeout=self.CHECK_FOR_UPDATE_PAUSE)
                 self.last_activity_time = time.time()
                 
                 if self._should_wake_up(transcription):
@@ -48,8 +53,8 @@ class VoiceActivityGatekeeper:
                 
                 if self._can_process_transcription():
                     self._process_transcription(transcription)
-                else:
-                    pass # Drop transcription
+                    
+                # Transcription is intentionally dropped if it can't be processed
             
             except queue.Empty:
                 continue
@@ -74,7 +79,7 @@ class VoiceActivityGatekeeper:
 
     def _hibernate_on_inactivity(self):
         while not self._finished:
-            time.sleep(0.1)
+            time.sleep(self.CHECK_FOR_UPDATE_PAUSE)
             with self._lock:
                 if (time.time() - self.last_activity_time) >= self.hibernation_activation_time:
                     self.hibernating = True
@@ -82,7 +87,7 @@ class VoiceActivityGatekeeper:
     def _open_gate_on_finish_response(self):
         while not self._finished:
             try:
-                self.responded_signal.get(timeout=0.1)
+                self.responded_signal.get(timeout=self.CHECK_FOR_UPDATE_PAUSE)
                 with self._lock:
                     self.last_activity_time = time.time()
                     self.responding = False
