@@ -31,4 +31,4 @@ jobs:
         AZURE_SPEECH_RESOURCE_KEY: ${{ secrets.AZURE_SPEECH_RESOURCE_KEY }} 
         AZURE_SPEECH_REGION: ${{ secrets.AZURE_SPEECH_REGION }} 
       run: |
-        pytest -v
+        timeout --signal=INT 30 pytest -v --full-trace --color=yes --code-highlight=yes --debug=pytest-debug.log
