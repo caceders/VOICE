@@ -1,4 +1,4 @@
 {
-    "hybernation_activation_time" : 30,
+    "hibernation_activation_time" : 30,
     "hibernation_wakeup_phrase": "Voice"
 }
