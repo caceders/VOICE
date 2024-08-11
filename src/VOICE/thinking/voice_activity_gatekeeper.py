@@ -6,17 +6,6 @@ import threading
 
 class voice_activity_gatekeeper:
 
-    unfiltered_transcription_queue: queue.Queue
-    filtered_transcription_queue: queue.Queue
-    responded_signal: queue.Queue
-
-    hibernation_activation_time: float
-    hibernation_wakeup_phrase: str
-
-    last_activity_time: float
-
-    _finished = False
-
     def __init__(self, unfiltered_transcription_queue, filtered_transcription_queue, responded_signal):
         self.unfiltered_transcription_queue = unfiltered_transcription_queue
         self.filtered_transcription_queue = filtered_transcription_queue
