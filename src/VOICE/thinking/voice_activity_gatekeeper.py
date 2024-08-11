@@ -10,8 +10,8 @@ class voice_activity_gatekeeper:
     filtered_transcription_queue: queue.Queue
     responded_signal: queue.Queue
 
-    hybernation_activation_time: float
-    hybernation_wakeup_phrase: str
+    hibernation_activation_time: float
+    hibernation_wakeup_phrase: str
 
     hybernating = False
     responding = False
@@ -30,8 +30,8 @@ class voice_activity_gatekeeper:
         with open('config.json', 'r') as file:
             config = json.load(file)
 
-        self.hybernation_activation_time = config['hybernation_activation_time']
-        self.hybernation_wakeup_phrase = config['hybernation_wakup_phrase']
+        self.hibernation_activation_time = config['hibernation_activation_time']
+        self.hibernation_wakeup_phrase = config['hibernation_wakup_phrase']
 
         self.last_activity_time = time.time()
 
@@ -39,8 +39,8 @@ class voice_activity_gatekeeper:
     def gatekeep_voice_activity(self):
 
         self.last_activity_time = time.time()
-        hybernation_thread = threading.Thread(target=self._hybernate_on_inactivity)
-        hybernation_thread.start()
+        hibernation_thread = threading.Thread(target=self._hybernate_on_inactivity)
+        hibernation_thread.start()
         response_signal_thread = threading.Thread(target=self._open_gate_on_finish_response)
         response_signal_thread.start()
 
@@ -52,7 +52,7 @@ class voice_activity_gatekeeper:
             transcription = self.unfiltered_transcription_queue.get()
 
             # Wake up if wakeup phrase is spoken
-            if (not self.responding) and self.hybernation_wakeup_phrase in transcription:
+            if (not self.responding) and self.hibernation_wakeup_phrase in transcription:
                 self.hybernating = False
                 self.wakeup_tag = 'Awoken'
             
@@ -64,7 +64,7 @@ class voice_activity_gatekeeper:
             else:
                 print("Dropped transcription")
         
-        hybernation_thread.join()
+        hibernation_thread.join()
         response_signal_thread.join()
 
     def stop(self):
@@ -72,7 +72,7 @@ class voice_activity_gatekeeper:
 
     def _hybernate_on_inactivity(self):
         while not self._finished:
-            if ((time.time() - self.last_activity_time) >= self.hybernation_activation_time):
+            if ((time.time() - self.last_activity_time) >= self.hibernation_activation_time):
                 self.hybernating = True
             time.sleep(.1)
 
