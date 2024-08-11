@@ -3,19 +3,11 @@ import time
 import json
 import threading
 
-# This should probably be solved using events instead of queues-> Getting tangled if statements and
-# Some threading oddeties?
-
-# Probably also should have used statemachine since there are many nested if statements.
-
-# There are a lot of threads here accessing the same variables - this has to be a
-# distributed system engineers wors nightmare. Luckily i'm not a distributed system engineer...
 
 class voice_activity_gatekeeper:
 
     unfiltered_transcription_queue: queue.Queue
     filtered_transcription_queue: queue.Queue
-    # Litteraly called responded signal - should be signal then, and not queue, dumdum.
     responded_signal: queue.Queue
 
     hybernation_activation_time: float
