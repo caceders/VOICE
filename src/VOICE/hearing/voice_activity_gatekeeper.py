@@ -28,6 +28,8 @@ class voice_activity_gatekeeper:
 
     last_activity_time: float
 
+    _finished = False
+
     def __init__(self, unfiltered_transcription_queue, filtered_transcription_queue, responded_signal):
         self.unfiltered_transcription_queue = unfiltered_transcription_queue
         self.filtered_transcription_queue = filtered_transcription_queue
@@ -50,41 +52,36 @@ class voice_activity_gatekeeper:
         response_signal_thread = threading.Thread(target=self._open_gate_on_finish_response)
         response_signal_thread.start()
 
-        while True:
-            try:
-                transcription = self.unfiltered_transcription_queue.get()
+        while not self._finished:
+            transcription = self.unfiltered_transcription_queue.get()
 
-                # Wake up if wakeup phrase is spoken
-                if (not self.responding) and self.hybernation_wakeup_phrase in transcription:
-                    self.hybernating = False
-                    self.wakeup_tag = 'Awoken'
-                
+            # Wake up if wakeup phrase is spoken
+            if (not self.responding) and self.hybernation_wakeup_phrase in transcription:
+                self.hybernating = False
+                self.wakeup_tag = 'Awoken'
+            
 
-                if (not self.hybernating) and (not self.responding):
-                    self.filtered_transcription_queue.put((transcription, self.wakeup_tag))
-                    self.wakeup_tag = ''
-                    self.responding = True
-                else:
-                    print("Dropped transcription")
-            except KeyboardInterrupt:
-                break
+            if (not self.hybernating) and (not self.responding):
+                self.filtered_transcription_queue.put((transcription, self.wakeup_tag))
+                self.wakeup_tag = ''
+                self.responding = True
+            else:
+                print("Dropped transcription")
+        
+        hybernation_thread.join()
+        response_signal_thread.join()
 
+    def stop(self):
+        self._finished = True
 
     def _hybernate_on_inactivity(self):
-        while True:
-            try:
-                if ((time.time() - self.last_activity_time) >= self.hybernation_activation_time):
-                    self.hybernating = True
-                time.sleep(0.1)
-            except KeyboardInterrupt:
-                break
-
+        while not self._finished:
+            if ((time.time() - self.last_activity_time) >= self.hybernation_activation_time):
+                self.hybernating = True
+            time.sleep(0.1)
 
     def _open_gate_on_finish_response(self):
-        while True:
-            try:
-                self.responded_signal.get()
-                self.last_activity_time = time.time()
-                self.responding = False
-            except KeyboardInterrupt:
-                break
+        while self._finished:
+            self.responded_signal.get()
+            self.last_activity_time = time.time()
+            self.responding = False

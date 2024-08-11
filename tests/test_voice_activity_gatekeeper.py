@@ -19,6 +19,8 @@ def test_get_message():
 
     unfiltered_transcriptions.put("Test")
     result, _ = filtered_transcriptions.get()
+
+    gatekeeper.stop()
     assert result == "Test"
 
 
@@ -35,6 +37,7 @@ def test_inital_wakeup_tag():
     unfiltered_transcriptions.put("Test")
     _, result = filtered_transcriptions.get()
 
+    gatekeeper.stop()
     assert result == "Awoken"
 
 
@@ -62,6 +65,7 @@ def test_responding():
     passing, _ = filtered_transcriptions.get()
     passing_2, _ = filtered_transcriptions.get()
 
+    gatekeeper.stop()
     assert passing == "Test passing"
     assert passing_2 == "Test passing 2"
 
@@ -88,5 +92,6 @@ def test_hybernation():
 
         message, awoken_flag  = filtered_transcriptions.get()
 
+        gatekeeper.stop()
         assert message == wakeup_phrase
         assert awoken_flag == "Awoken"
