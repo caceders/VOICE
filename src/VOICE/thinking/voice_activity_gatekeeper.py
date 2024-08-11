@@ -49,7 +49,7 @@ class voice_activity_gatekeeper:
                 if self._can_process_transcription():
                     self._process_transcription(transcription)
                 else:
-                    self._drop_transcription()
+                    pass # Drop transcription
             
             except queue.Empty:
                 continue
@@ -71,9 +71,6 @@ class voice_activity_gatekeeper:
             self.filtered_transcription_queue.put((transcription, self.wakeup_tag))
             self.wakeup_tag = ''
             self.responding = True
-
-    def _drop_transcription(self):
-        print("Dropped transcription")
 
     def _hibernate_on_inactivity(self):
         while not self._finished:
