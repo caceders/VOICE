@@ -51,31 +51,40 @@ class voice_activity_gatekeeper:
         response_signal_thread.start()
 
         while True:
-            transcription = self.unfiltered_transcription_queue.get()
+            try:
+                transcription = self.unfiltered_transcription_queue.get()
 
-            # Wake up if wakeup phrase is spoken
-            if (not self.responding) and self.hybernation_wakeup_phrase in transcription:
-                self.hybernating = False
-                self.wakeup_tag = 'Awoken'
-            
+                # Wake up if wakeup phrase is spoken
+                if (not self.responding) and self.hybernation_wakeup_phrase in transcription:
+                    self.hybernating = False
+                    self.wakeup_tag = 'Awoken'
+                
 
-            if (not self.hybernating) and (not self.responding):
-                self.filtered_transcription_queue.put((transcription, self.wakeup_tag))
-                self.wakeup_tag = ''
-                self.responding = True
-            else:
-                print("Dropped transcription")
+                if (not self.hybernating) and (not self.responding):
+                    self.filtered_transcription_queue.put((transcription, self.wakeup_tag))
+                    self.wakeup_tag = ''
+                    self.responding = True
+                else:
+                    print("Dropped transcription")
+            except KeyboardInterrupt:
+                break
 
 
     def _hybernate_on_inactivity(self):
         while True:
-            if ((time.time() - self.last_activity_time) >= self.hybernation_activation_time):
-                self.hybernating = True
-            time.sleep(0.1)
+            try:
+                if ((time.time() - self.last_activity_time) >= self.hybernation_activation_time):
+                    self.hybernating = True
+                time.sleep(0.1)
+            except KeyboardInterrupt:
+                break
 
 
     def _open_gate_on_finish_response(self):
         while True:
-            self.responded_signal.get()
-            self.last_activity_time = time.time()
-            self.responding = False
+            try:
+                self.responded_signal.get()
+                self.last_activity_time = time.time()
+                self.responding = False
+            except KeyboardInterrupt:
+                break
