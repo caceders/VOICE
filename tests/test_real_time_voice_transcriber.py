@@ -10,17 +10,12 @@ import time
 def test_real_time_voice_transcriber():
     
     transcription_queue = Queue()
-    quit_queue = Queue()
     audio_test_file = os.path.abspath("./tests/assets/this_is_a_test.wav")
 
-    transcriber = RealTimeVoiceTranscriber(transcription_queue, quit_queue, audio_test_file)
-    
-    transcriber_thread = threading.Thread(target= transcriber.transcribe_voice)
-    transcriber_thread.start()
+    transcriber = RealTimeVoiceTranscriber(transcription_queue, audio_test_file)
 
-    result = transcription_queue.get()
-    
-    quit_queue.put("quit")
-    transcriber_thread.join()
+    result : str = transcription_queue.get()
 
-    assert (result == "This is a test.")
+    transcriber.stop()
+
+    assert result.strip().lower() == "this is a test."

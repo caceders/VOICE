@@ -2,17 +2,16 @@ import azure.cognitiveservices.speech as speechsdk
 from queue import Queue
 from dotenv import load_dotenv
 import os
-
+import threading
+import time
 
 class RealTimeVoiceTranscriber:
 
-    transcription_queue: Queue
-    quit_queue: Queue
-    speech_recognizer: speechsdk.SpeechRecognizer
+    WAIT_FOR_EXIT_PAUSE = .1
 
-    def __init__(self, transcription_queue, quit_queue, audio_file_path=None) -> None:
+    def __init__(self, transcription_queue, audio_file_path=None) -> None:
         self.transcription_queue = transcription_queue
-        self.quit_queue = quit_queue
+        self._finished = False
 
         load_dotenv()
         resource_key = os.getenv("AZURE_SPEECH_RESOURCE_KEY")
@@ -29,9 +28,15 @@ class RealTimeVoiceTranscriber:
             audio_config = speechsdk.audio.AudioConfig(use_default_microphone=True)
 
         self.speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, audio_config=audio_config)
-    
-    def transcribe_voice(self) -> None:
 
+        transcription_thread = threading.Thread(target=self._transcribe_voice)
+        transcription_thread.start()
+
+    def stop(self):
+        self._finished = True
+        self.speech_recognizer.stop_continuous_recognition()
+
+    def _transcribe_voice(self):
         def handle_transcription_results(evt: speechsdk.SpeechRecognitionEventArgs):
             if evt.result.reason == speechsdk.ResultReason.RecognizedSpeech:
                 print(evt.result.text)
@@ -40,5 +45,6 @@ class RealTimeVoiceTranscriber:
         self.speech_recognizer.recognized.connect(handle_transcription_results)
 
         self.speech_recognizer.start_continuous_recognition()
-
-        self.quit_queue.get()
+        
+        while not self._finished:
+            time.sleep(self.WAIT_FOR_EXIT_PAUSE)
