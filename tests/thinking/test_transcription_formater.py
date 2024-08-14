@@ -3,26 +3,23 @@ from datetime import datetime
 import pytest
 from freezegun import freeze_time
 
-@pytest.mark.skip(reason="Functionality not implemented yet")
 def test_timestamp():
 
-    TranscriptionFormater()
+    formater = TranscriptionFormater()
 
     freeze_time()
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M")
-    formated_transcript = TranscriptionFormater.format(("test", ""))
+    
+    formated_transcript = formater.format(("test", ""))
 
     assert formated_transcript == f"[{current_time}]test"
 
 
-@pytest.mark.skip(reason="Functionality not implemented yet")
 def test_wakeupstamp():
-    TranscriptionFormater()
-
-    TranscriptionFormater()
+    formater = TranscriptionFormater()
 
     freeze_time()
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M")
-    formated_transcript = TranscriptionFormater.format(("test", "Awoken"))
+    formated_transcript = formater.format(("test", "Awoken"))
 
     assert formated_transcript == f"[{current_time}][Awoken]test"
